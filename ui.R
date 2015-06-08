@@ -18,28 +18,27 @@ odbcGetInfo(channel)
 Tables <- sqlTables(channel, "DW")
 
 # Query the database and put the results into the data frame "dataframe"
-dataframe <- sqlQuery(channel, "SELECT * FROM DW.dbo.f_ResourceHistory WHERE StartTime > (GETUTCDATE() - 1)")
+df.ROC <- sqlQuery(channel, "SELECT * FROM DW.dbo.f_ResourceHistory WHERE StartTime > (GETUTCDATE() - 1) AND ResourceType = 'ROC'")
+df.WER <- sqlQuery(channel, "SELECT * FROM DW.dbo.f_ResourceHistory WHERE StartTime > (GETUTCDATE() - 1) AND ResourceType = 'WER'")
+df.CTS <- sqlQuery(channel, "SELECT * FROM DW.dbo.f_ResourceHistory WHERE StartTime > (GETUTCDATE() - 1) AND ResourceType = 'CTS'")
+
+
 # close ODBC connection!!!
 odbcClose(channel)
 
 shinyUI(fluidPage(
+  titlePanel("MIASOLE FACTORY OEE"),
 
-  # Application title
-  titlePanel("Old Faithful Geyser Data"),
-
-  # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-      sliderInput("bins",
-                  "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
+      selectInput("type", 
+                  label = "Choose a Resource to display",
+                  choices = list("ROC", "CTS","WER"),
+                  selected = "ROC")
     ),
-
-    # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("distPlot")
+      verbatimTextOutput("summary"),
+      tableOutput("view")
     )
   )
 ))

@@ -8,16 +8,22 @@
 library(shiny)
 
 shinyServer(function(input, output) {
-
-  output$distPlot <- renderPlot({
-
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2]
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
-
+  # Return the requested dataset
+  datasetInput <- reactive({
+    switch(input$type,
+           "ROC" = df.ROC,
+           "CTS" = df.CTS,
+           "WER" = df.WER)
   })
-
+  
+  # Generate a summary of the dataset
+  output$summary <- renderPrint({
+    dataset <- datasetInput()
+    summary(dataset)
+  })
+  
+  # Show the first "n" observations
+  output$view <- renderTable({
+    head(datasetInput(),n = 10)
+  })
 })
