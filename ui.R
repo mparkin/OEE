@@ -5,6 +5,7 @@
 # http://shiny.rstudio.com
 #
 library(shiny)
+library(DT)
 
 
 shinyUI(fluidPage(
@@ -14,12 +15,12 @@ shinyUI(fluidPage(
     sidebarPanel(
       selectInput("type", 
                   label = "Choose a Resource to display",
-                  choices = list("ROC", "CTS","WER"),
+                  choices = list("ROC", "CTS","WER","YLD"),
                   selected = "ROC")
     ),
     mainPanel(
-      verbatimTextOutput("summary"),
-      tableOutput("view")
+      #verbatimTextOutput("summary"),
+      DT::dataTableOutput("view")
     )
   )
 ))
