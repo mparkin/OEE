@@ -18,9 +18,9 @@ odbcGetInfo(channel)
 Tables <- sqlTables(channel, "DW")
 
 # Query the database and put the results into the data frame "dataframe"
-df.ROC <- sqlQuery(channel, "SELECT * FROM DW.dbo.f_ResourceHistory WHERE StartTime > (GETUTCDATE() - 1) AND ResourceType = 'ROC'")
-df.WER <- sqlQuery(channel, "SELECT * FROM DW.dbo.f_ResourceHistory WHERE StartTime > (GETUTCDATE() - 1) AND ResourceType = 'WER'")
-df.CTS <- sqlQuery(channel, "SELECT * FROM DW.dbo.f_ResourceHistory WHERE StartTime > (GETUTCDATE() - 1) AND ResourceType = 'CTS'")
+df.ROC <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= DATEADD(day, -1, GETDATE()) AND ResourceType = 'ROC'")
+df.CTS <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= DATEADD(day, -1, GETDATE()) AND ResourceType = 'CTS'")
+df.WER <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= DATEADD(day, -1, GETDATE()) AND ResourceType = 'WER'")
 
 
 # close ODBC connection!!!
