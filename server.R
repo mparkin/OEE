@@ -6,6 +6,27 @@
 #
 
 library(shiny)
+library(RODBC)
+
+#Create a connection to the database called "channel"
+channel <- odbcConnect("mia4","fis","fis")
+
+# Check that connection is working (Optional)
+odbcGetInfo(channel)
+
+# Find out what tables are available (Optional)
+Tables <- sqlTables(channel, "DW")
+
+# Query the database and put the results into the data frame "dataframe"
+df.ROC <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= DATEADD(day, -1, GETDATE()) AND ResourceType = 'ROC'")
+df.CTS <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= DATEADD(day, -1, GETDATE()) AND ResourceType = 'CTS'")
+df.WER <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= DATEADD(day, -1, GETDATE()) AND ResourceType = 'WER'")
+
+
+# close ODBC connection!!!
+odbcClose(channel)
+
+
 
 shinyServer(function(input, output) {
   # Return the requested dataset
