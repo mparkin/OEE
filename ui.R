@@ -16,7 +16,10 @@ shinyUI(fluidPage(
       selectInput("type", 
                   label = "Choose a Resource to display",
                   choices = list("ROC", "CTS","WER","YLD"),
-                  selected = "ROC")
+                  selected = "ROC"),
+      tableOutput("statusROC"),
+      tableOutput("statusCTS"),
+      tableOutput("statusWER")
     ),
     mainPanel(
       #verbatimTextOutput("summary"),

@@ -9,23 +9,16 @@ library(shiny)
 library(DT)
 source("DataAccess.R" )
 
-#getdbdata("2015-06-01 00:00:00.000'")
-#Create a connection to the database called "channel"
-channel <- odbcConnect("mia4","fis","fis")
-
-# Check that connection is working (Optional)
-odbcGetInfo(channel)
-#df.ROC <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= DATEADD(day, -1, GETDATE()) AND ResourceType = 'ROC'")
-#df.CTS <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= DATEADD(day, -1, GETDATE()) AND ResourceType = 'CTS'")
-#df.WER <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= DATEADD(day, -1, GETDATE()) AND ResourceType = 'WER'")
-#df.Yield <- sqlQuery(channel, "select * from DW.dbo.f_FEOLCellVision WHERE Owner = 'MFG' and Coater = 'ROC03' AND CoaterTime > '2015-06-01 00:00:00.000'")
-df.ROC <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= '2015-06-01 00:00:00.000' AND ResourceType = 'ROC'")
-df.CTS <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= '2015-06-01 00:00:00.000' AND ResourceType = 'CTS'")
-df.WER <- sqlQuery(channel, "SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE StartTime >= '2015-06-01 00:00:00.000' AND ResourceType = 'WER'")
-df.Yield <- sqlQuery(channel, "select TestTime, CoaterTime,CellTested, CellPassed, Grade, VisionTested, VisionPassed, DTStamp, Coater, Weaver from DW.dbo.f_FEOLCellVision WHERE Owner = 'MFG' and Coater = 'ROC03' AND CoaterTime > '2015-06-01 00:00:00.000'")
+df.ROC<-getResourcedata("2015-06-01 00:00:00.000","ROC")
+df.CTS<-getResourcedata("2015-06-01 00:00:00.000","CTS")
+df.WER<-getResourcedata("2015-06-01 00:00:00.000","WER")
+df.Yield <- getYielddata("2015-06-01 00:00:00.000","ROC03")
 
 # close ODBC connection!!!
-odbcClose(channel)
+#odbcClose(channel)
+RCIDs<-unique(df.ROC[,1],)
+CTSIDs<-unique(df.CTS[,1],)
+WERIDs<-unique(df.WER[,1],)
 
 shinyServer(function(input, output) {
   # Return the requested dataset
@@ -44,8 +37,18 @@ shinyServer(function(input, output) {
     summary(dataset)
   })
   
-  # Show the first "n" observations
+  # show table
   output$view <- DT::renderDataTable({
     datasetInput()
+  })
+  # show stauts
+  output$statusROC <- renderTable({
+    df.ROC[order(df.ROC[,7]),][,c("Resource","E10")][(nrow(df.ROC)-nlevels(RCIDs)+1):nrow(df.ROC),]
+  })
+  output$statusCTS <- renderTable({
+    df.CTS[order(df.CTS[,7]),][,c("Resource","E10")][(nrow(df.CTS)-nlevels(CTSIDs)+1):nrow(df.CTS),]
+  })
+  output$statusWER <- renderTable({
+    df.WER[order(df.WER[,7]),][,c("Resource","E10")][(nrow(df.WER)-nlevels(WERIDs)+1):nrow(df.WER),]
   })
 })
