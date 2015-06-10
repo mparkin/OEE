@@ -17,12 +17,13 @@ buildOptimal <- function(hours)
   {
     df.res[,i] <-df.temp[, i]  * hours
   }
+  colnames(df.res) <- c("OEESheets","OEECells","OEEWatts","YldOEESheets","YldOEECells","YldOEEWatts","DataType")
   return(df.res)
 }
 
 cellOUtput <- function(df.data)
 {
-  v.res <-colSums(df.Yield[,3:4])
+  v.res <-colSums(df.data[,3:4])
   return (v.res)
 }
 
@@ -37,5 +38,7 @@ buildcellout <- function(v.cellYield, df.OEEdata)
   df.OEEdata[2,6]<- v.cellYield[2] * OEE.defs[1,4]
   a.vector <- c("Ideal","Actual")
   df.OEEdata[,"DataType"]<- a.vector
-  
+  return(df.OEEdata) 
 }
+
+                 )

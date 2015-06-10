@@ -41,7 +41,10 @@ shinyServer(function(input, output) {
   output$view <- DT::renderDataTable({
     datasetInput()
   })
-  # show stauts
+  output$OEEBarChart <- renderPlot({
+    OEEBarChart(df.OEEdata)
+  })
+  # show status
   output$statusROC <- renderTable({
     df.ROC[order(df.ROC[,7]),][,c("Resource","E10")][(nrow(df.ROC)-nlevels(RCIDs)+1):nrow(df.ROC),]
   })
@@ -51,4 +54,5 @@ shinyServer(function(input, output) {
   output$statusWER <- renderTable({
     df.WER[order(df.WER[,7]),][,c("Resource","E10")][(nrow(df.WER)-nlevels(WERIDs)+1):nrow(df.WER),]
   })
+
 })
