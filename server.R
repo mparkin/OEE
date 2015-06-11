@@ -44,6 +44,9 @@ shinyServer(function(input, output) {
   output$OEEBarChart <- renderPlot({
     OEEBarChart(df.OEEdata)
   })
+  output$OEEPareto <- renderPlot({
+    OEEPareto(datasetInput())
+  })
   # show status
   output$statusROC <- renderTable({
     df.ROC[order(df.ROC[,7]),][,c("Resource","E10")][(nrow(df.ROC)-nlevels(RCIDs)+1):nrow(df.ROC),]

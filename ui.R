@@ -9,7 +9,7 @@ library(DT)
 
 
 shinyUI(fluidPage(
-  titlePanel("MIASOLE FACTORY OEE"),
+  titlePanel("MIASOLE FEOL OEE"),
 
   sidebarLayout(
     sidebarPanel(
@@ -25,6 +25,7 @@ shinyUI(fluidPage(
     ),
     mainPanel(
       #verbatimTextOutput("summary"),
+      plotOutput("OEEPareto"),
       DT::dataTableOutput("view")
     )
   )

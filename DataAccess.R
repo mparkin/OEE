@@ -16,6 +16,7 @@ getResourcedata = function(startDate, Res)
   sqlcmd <- paste("SELECT Resource, E10, E58, Reason, Availability, StartTime, EndTime FROM DW.dbo.f_ResourceHistory WHERE ResourceType = '", Res , "' AND StartTime >= '", startDate,"'", sep = "" )
   # Query the database and put the results into the data frame "dataframe"
   df.OUT <- sqlQuery(channel, sqlcmd)
+  df.OUT <- transform(df.OUT,duration = as.double(ymd_hms(EndTime)-ymd_hms(StartTime)))
 
   # close ODBC connection!!!
   odbcClose(channel)
