@@ -38,5 +38,10 @@ buildcellout <- function(v.cellYield, df.OEEdata)
   df.OEEdata[2,6]<- v.cellYield[2] * OEE.defs[1,4]
   a.vector <- c("Ideal","Actual")
   df.OEEdata[,"DataType"]<- a.vector
+  df.OEEdata[3,3]<- df.OEEdata[2,3] / df.OEEdata[1,3]
+  df.OEEdata[3,2]<- df.OEEdata[2,2] / df.OEEdata[1,2]
+  df.OEEdata[3,5]<- df.OEEdata[2,5] / df.OEEdata[1,5]
+  df.OEEdata[3,6]<- df.OEEdata[2,6] / df.OEEdata[1,6]
+  
   return(df.OEEdata) 
 }
