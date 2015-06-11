@@ -18,6 +18,8 @@ shinyUI(fluidPage(
                   choices = list("ROC", "CTS","WER","YLD"),
                   selected = "ROC"),
       plotOutput("OEEBarChart"),
+      textOutput("rawOEE"),
+      textOutput("committedOEE"),
       tableOutput("statusROC"),
       tableOutput("statusCTS"),
       tableOutput("statusWER")

@@ -27,7 +27,7 @@ OEEPareto <- function(df.data)
     df.tmp<-melt(df.data, id = "Grade", "CellTested")
     df.graph<-cast(df.tmp,Grade~variable,sum)
     ggplot(data=df.graph, aes(x=Grade, y=CellTested),colour = Grade, fill = Grade) +
-      geom_bar(stat="identity")
+      geom_bar(stat="identity",colour = "Red", fill = "Blue")
     
   }
 }

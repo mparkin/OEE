@@ -40,7 +40,9 @@ shinyServer(function(input, output) {
     dataset <- datasetInput()
     summary(dataset)
   })
-  
+  # OEE numbers to screen
+  output$rawOEE <- renderText({paste("Raw Watts OEE", df.OEEdata[3,3])})
+  output$committedOEE <- renderText({paste("Committed Watts OEE",df.OEEdata[3,6])})
   # show table
   output$view <- DT::renderDataTable({
     datasetInput()
