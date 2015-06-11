@@ -17,7 +17,7 @@ buildOptimal <- function(hours)
   {
     df.res[,i] <-df.temp[, i]  * hours
   }
-  colnames(df.res) <- c("OEESheets","OEECells","OEEWatts","YldOEESheets","YldOEECells","YldOEEWatts","DataType")
+  colnames(df.res) <- c("OEESheets","OEECells","OEEWatts","YldOEESheets","YldOEECells","YldOEEWatts")
   return(df.res)
 }
 
@@ -40,5 +40,3 @@ buildcellout <- function(v.cellYield, df.OEEdata)
   df.OEEdata[,"DataType"]<- a.vector
   return(df.OEEdata) 
 }
-
-                 )

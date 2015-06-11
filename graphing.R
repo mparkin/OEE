@@ -7,19 +7,27 @@ library(ggplot2)
 #function to plot actual OEE to Ideal OEE bar chart
 OEEBarChart <- function(df.data)
 {
-  df.out <- melt(df.data,id.vars = "DataType")
+  df.graph <- melt(df.data,id.vars = "DataType")
   ggplot(df.graph,aes(x= variable, y = value, colour = DataType,fill = DataType)) +
     geom_bar(position = 'dodge',stat = "identity")
 }
 
 OEEPareto <- function(df.data)
 {
-  #v.Resource <- unique(df.data[,"Resource"])
-  #v.E10 <- unique(df.data[,"E10"])
-  #v.E58 <- unique(df.data[,"E58"])
-  df.tmp <-ddply(df.data,c("Resource","E10","E58"),function(df.ROC)sum(df.ROC$duration)/3600)
-  df.graph <- df.tmp
-  ggplot(df.graph,aes(reorder(V1,E10),x= E10, y = V1, colour = Resource,fill = Resource)) +
-    geom_bar(position = 'dodge',stat = "identity") +
-    facet_grid(Resource ~ .)
+  if(colnames(df.data)[1] == "Resource")
+  { 
+
+    df.graph <-ddply(df.data,c("Resource","E10","E58"),function(df.graph)sum(df.graph$duration)/3600)
+    ggplot(df.graph,aes(reorder(V1,E10),x= E10, y = V1, colour = Resource,fill = Resource)) +
+      geom_bar(position = 'dodge',stat = "identity") +
+      facet_grid(Resource ~ .)
+  }
+  else
+  {
+    df.tmp<-melt(df.data, id = "Grade", "CellTested")
+    df.graph<-cast(df.tmp,Grade~variable,sum)
+    ggplot(data=df.graph, aes(x=Grade, y=CellTested),colour = Grade, fill = Grade) +
+      geom_bar(stat="identity")
+    
+  }
 }
