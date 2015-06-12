@@ -18,8 +18,6 @@ df.Yield <- getYielddata("2015-06-01 00:00:00.000","ROC03")
 df.OEEdata <- buildOptimal(runTimeHrs(epoch,now()))
 df.OEEdata <- buildcellout(cellOUtput(df.Yield),df.OEEdata)
 
-# close ODBC connection!!!
-#odbcClose(channel)
 RCIDs<-unique(df.ROC[,1],)
 CTSIDs<-unique(df.CTS[,1],)
 WERIDs<-unique(df.WER[,1],)
