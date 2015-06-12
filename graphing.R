@@ -3,6 +3,7 @@
 library(reshape2)
 library(plyr)
 library(ggplot2)
+library(reshape)
 
 #function to plot actual OEE to Ideal OEE bar chart
 OEEBarChart <- function(df.data)
