@@ -11,16 +11,16 @@ source("DataAccess.R" )
 source("graphing.R")
 source("OEEcalc.R")
 
-df.ROC<-getResourcedata("2015-06-01 00:00:00.000","ROC")
-df.CTS<-getResourcedata("2015-06-01 00:00:00.000","CTS")
-df.WER<-getResourcedata("2015-06-01 00:00:00.000","WER")
-df.Yield <- getYielddata("2015-06-01 00:00:00.000","ROC03")
+df.ROC<-getResourcedata(epoch,"ROC")
+df.CTS<-getResourcedata(epoch,"CTS")
+df.WER<-getResourcedata(epoch,"WER")
+df.Yield <- getYielddata(epoch)
 df.OEEdata <- buildOptimal(runTimeHrs(epoch,now()))
 df.OEEdata <- buildcellout(cellOUtput(df.Yield),df.OEEdata)
 
-RCIDs<-unique(df.ROC[,1],)
-CTSIDs<-unique(df.CTS[,1],)
-WERIDs<-unique(df.WER[,1],)
+RCIDs<-unique(df.ROC[,1])
+CTSIDs<-unique(df.CTS[,1])
+WERIDs<-unique(df.WER[,1])
 
 shinyServer(function(input, output) {
   # Return the requested dataset

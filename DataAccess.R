@@ -18,7 +18,7 @@ getResourcedata = function(startDate, Res)
   return(df.OUT)
 }
 
-getYielddata = function(startDate,Res)
+getYielddata = function(startDate)
 {
   #Create a connection to the database called "channel"
   channel <- odbcConnect("mia4","fis","fis")
