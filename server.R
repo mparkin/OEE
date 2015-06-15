@@ -7,31 +7,43 @@
 
 library(shiny)
 library(DT)
+library(lubridate)
+
 source("DataAccess.R" )
 source("graphing.R")
 source("OEEcalc.R")
 
-df.ROC<-getResourcedata(epoch,"ROC")
-df.CTS<-getResourcedata(epoch,"CTS")
-df.WER<-getResourcedata(epoch,"WER")
-df.Yield <- getYielddata(epoch)
-df.OEEdata <- buildOptimal(runTimeHrs(epoch,now()))
-df.OEEdata <- buildcellout(cellOUtput(df.Yield),df.OEEdata)
+epoch<- "2015-06-01 00:00:00.000"    
+endTime<- now()
+starttime <- epoch
 
-RCIDs<-unique(df.ROC[,1])
-CTSIDs<-unique(df.CTS[,1])
-WERIDs<-unique(df.WER[,1])
+
+
 
 shinyServer(function(input, output) {
-  # Return the requested dataset
+ 
+   OEE.defs <- read.csv("OEEassump.csv")   
+   intstart <- reactive({
+     input$starttime
+   })
 
-  datasetInput <- reactive({
-    switch(input$type,
-           "ROC" = df.ROC,
-           "CTS" = df.CTS,
-           "WER" = df.WER,
-           "YLD" = df.Yield)
-  })
+   output$view <- DT::renderDataTable({
+     getdbdata()
+   })
+
+   getdbdata<- function()
+   {
+     return (getResourcedata(input$starttime,input$type,input$endTime))
+   }
+
+   getyldData <- function()
+   {
+     df.OEEdata <- buildOptimal(runTimeHrs(input$starttime,input$endTime))
+     df.OEEdata <- buildcellout(cellOUtput(getYielddata(input$starttime,input$endTime)),df.OEEdata)
+     return (df.OEEdata)
+   }
+  
+ 
   
   # Generate a summary of the dataset
   output$summary <- renderPrint({
@@ -39,27 +51,19 @@ shinyServer(function(input, output) {
     summary(dataset)
   })
   # OEE numbers to screen
-  output$rawOEE <- renderText({paste("Raw Watts OEE", df.OEEdata[3,3])})
-  output$committedOEE <- renderText({paste("Committed Watts OEE",df.OEEdata[3,6])})
+  #output$rawOEE <- renderText({paste("Raw Watts OEE", df.OEEdata[3,3])})
+  #output$committedOEE <- renderText({paste("Committed Watts OEE",df.OEEdata[3,6])})
   # show table
-  output$view <- DT::renderDataTable({
-    datasetInput()
-  })
   output$OEEBarChart <- renderPlot({
-    OEEBarChart(df.OEEdata)
+    OEEBarChart(getyldData())
   })
   output$OEEPareto <- renderPlot({
-    OEEPareto(datasetInput())
+    OEEPareto(getdbdata())
   })
   # show status
   output$statusROC <- renderTable({
-    df.ROC[order(df.ROC[,7]),][,c("Resource","E10")][(nrow(df.ROC)-nlevels(RCIDs)+1):nrow(df.ROC),]
-  })
-  output$statusCTS <- renderTable({
-    df.CTS[order(df.CTS[,7]),][,c("Resource","E10")][(nrow(df.CTS)-nlevels(CTSIDs)+1):nrow(df.CTS),]
-  })
-  output$statusWER <- renderTable({
-    df.WER[order(df.WER[,7]),][,c("Resource","E10")][(nrow(df.WER)-nlevels(WERIDs)+1):nrow(df.WER),]
+    df.tmp <- getdbdata()
+    df.tmp[order(df.tmp[,7]),][,c("Resource","E10")][(nrow(df.tmp)-nlevels(unique(df.tmp[,1]))+1):nrow(df.tmp),]
   })
 
 })

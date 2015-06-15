@@ -6,13 +6,19 @@
 #
 library(shiny)
 library(DT)
-
-
+ 
+ epoch<- "2015-06-01 00:00:00.000"
+ endTime<- now()
+ starttime <- epoch
+ 
 shinyUI(fluidPage(
   titlePanel("MIASOLE FEOL OEE"),
 
   sidebarLayout(
     sidebarPanel(
+      textInput("starttime", "From:", value = epoch ),
+      #textOutput("Start"),
+      textInput("endTime", "To:", value = endTime ),
       selectInput("type", 
                   label = "Choose a Resource to display",
                   choices = list("ROC", "CTS","WER","YLD"),

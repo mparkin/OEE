@@ -5,7 +5,7 @@ OEE.defs<- read.csv("OEEassump.csv")
 
 runTimeHrs <- function(StartTime, EndTime)
 {
-  return((EndTime - (ymd_hms(StartTime)))/ ehours(1) )
+  return((ymd_hms(EndTime) - (ymd_hms(StartTime)))/ ehours(1))
 }
 
 
