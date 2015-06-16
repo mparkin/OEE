@@ -26,9 +26,15 @@ shinyServer(function(input, output) {
    intstart <- reactive({
      input$starttime
    })
-
+   # main screen output data table
    output$view <- DT::renderDataTable({
-     getdbdata()
+     if(input$type != "YLD")
+     {
+       getdbdata()  
+     }else {
+       getYielddata(input$starttime,input$endTime)
+     }
+     
    })
 
    getdbdata<- function()
@@ -36,7 +42,7 @@ shinyServer(function(input, output) {
      return (getResourcedata(input$starttime,input$type,input$endTime))
    }
 
-   getyldData <- function()
+   getOEEData <- function()
    {
      df.OEEdata <- buildOptimal(runTimeHrs(input$starttime,input$endTime))
      df.OEEdata <- buildcellout(cellOUtput(getYielddata(input$starttime,input$endTime)),df.OEEdata)
@@ -55,14 +61,22 @@ shinyServer(function(input, output) {
   #output$committedOEE <- renderText({paste("Committed Watts OEE",df.OEEdata[3,6])})
   # show table
   output$OEEBarChart <- renderPlot({
-    OEEBarChart(getyldData())
+    OEEBarChart(getOEEData())
   })
   output$OEEPareto <- renderPlot({
-    OEEPareto(getdbdata())
+    if(input$type != "YLD")
+    {
+      OEEPareto(getdbdata())  
+    }else {
+      OEEPareto(getYielddata(input$starttime,input$endTime))
+    }
+    
   })
   # show status
   output$statusROC <- renderTable({
     df.tmp <- getdbdata()
+    res.list <-unique(df.tmp[,1])
+    
     df.tmp[order(df.tmp[,7]),][,c("Resource","E10")][(nrow(df.tmp)-nlevels(unique(df.tmp[,1]))+1):nrow(df.tmp),]
   })
 
